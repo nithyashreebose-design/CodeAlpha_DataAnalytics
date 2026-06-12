@@ -1,0 +1,82 @@
+Microsoft Windows [Version 10.0.26200.8457]
+(c) Microsoft Corporation. All rights reserved.
+
+C:\Users\Vigne>pip install feedparser
+Requirement already satisfied: feedparser in .\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages (6.0.12)
+Requirement already satisfied: sgmllib3k in .\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages (from feedparser) (1.0.0)
+
+[notice] A new release of pip is available: 26.1.1 -> 26.1.2
+[notice] To update, run: C:\Users\Vigne\AppData\Local\Python\pythoncore-3.14-64\python.exe -m pip install --upgrade pip
+
+C:\Users\Vigne>python -c "f=open('news_sentiment.py','w');f.write('import feedparser\nimport pandas as pd\nimport matplotlib\nmatplotlib.use(\"Agg\")\nimport matplotlib.pyplot as plt\nfrom nltk.sentiment.vader import SentimentIntensityAnalyzer\nimport nltk\nnltk.download(\"vader_lexicon\",quiet=True)\nprint(\"Fetching BBC News headlines...\")\nfeed=feedparser.parse(\"http://feeds.bbci.co.uk/news/rss.xml\")\nheadlines=[]\nfor entry in feed.entries:\n    headlines.append({\"title\":entry.title,\"summary\":entry.get(\"summary\",\"\"),\"link\":entry.link})\ndf=pd.DataFrame(headlines)\nprint(f\"Fetched {len(df)} headlines!\")\nprint(df[\"title\"].head(10).to_string())\nsia=SentimentIntensityAnalyzer()\ndf[\"score\"]=df[\"title\"].apply(lambda x:sia.polarity_scores(x)[\"compound\"])\ndf[\"sentiment\"]=df[\"score\"].apply(lambda x:\"positive\" if x>=0.05 else(\"negative\" if x<=-0.05 else \"neutral\"))\nprint(\"\\nSentiment Distribution:\")\nprint(df[\"sentiment\"].value_counts())\nprint(\"\\nTop 3 Positive Headlines:\")\nprint(df[df[\"sentiment\"]==\"positive\"][[\"title\",\"score\"]].head(3).to_string())\nprint(\"\\nTop 3 Negative Headlines:\")\nprint(df[df[\"sentiment\"]==\"negative\"][[\"title\",\"score\"]].head(3).to_string())\ndf.to_csv(\"news_sentiment.csv\",index=False)\nfig,ax=plt.subplots(1,2,figsize=(12,5))\nfig.suptitle(\"BBC News - Sentiment Analysis\",fontsize=14,fontweight=\"bold\")\nvc=df[\"sentiment\"].value_counts()\nax[0].pie(vc.values,labels=vc.index,autopct=\"%1.1f%%\",colors=[\"#2ECC71\",\"#E74C3C\",\"#F39C12\"])\nax[0].set_title(\"Sentiment Distribution\")\ndf[\"score\"].hist(bins=15,ax=ax[1],color=\"#3498DB\",edgecolor=\"white\")\nax[1].axvline(x=0,color=\"red\",linestyle=\"--\")\nax[1].set_title(\"Sentiment Score Distribution\")\nax[1].set_xlabel(\"VADER Score\")\nplt.tight_layout()\nplt.savefig(\"news_sentiment.png\",dpi=150)\nprint(\"Chart saved! Open news_sentiment.png\")\n');f.close();print('Done!')"
+Done!
+
+C:\Users\Vigne>python news_sentiment.py
+Fetching BBC News headlines...
+Fetched 34 headlines!
+0    Celebrated British artist David Hockney dies a...
+1    Ministers want 60% of children walking or cycl...
+2    Grooming survivors left with criminal records ...
+3    Donaldson denies meeting sex abuse accuser to ...
+4    London council takes possession of property li...
+5    Taylor Swift makes tearful 21-minute speech as...
+6    My friends always want to split the bill equal...
+7    Israeli tech firm accused of targeting First M...
+8    'No-one knows it's on' - NBA Finals feed US Wo...
+9    From near death to tournament hero - Jimenez's...
+
+Sentiment Distribution:
+sentiment
+negative    15
+positive    10
+neutral      9
+Name: count, dtype: int64
+
+Top 3 Positive Headlines:
+                                                                               title   score
+0                               Celebrated British artist David Hockney dies aged 88  0.5719
+1                Ministers want 60% of children walking or cycling to school by 2035  0.0772
+5  Taylor Swift makes tearful 21-minute speech as she joins Songwriters Hall of Fame  0.5719
+
+Top 3 Negative Headlines:
+                                                                            title   score
+2      Grooming survivors left with criminal records still being failed, BBC told -0.7717
+3      Donaldson denies meeting sex abuse accuser to 'nip in the bud' allegations -0.7906
+7  Israeli tech firm accused of targeting First Minister John Swinney in election -0.2960
+Chart saved! Open news_sentiment.png
+
+C:\Users\Vigne>python news_sentiment.py
+Fetching BBC News headlines...
+Fetched 34 headlines!
+0    Celebrated British artist David Hockney dies a...
+1    Ministers want 60% of children walking or cycl...
+2    Grooming survivors left with criminal records ...
+3    Donaldson denies meeting sex abuse accuser to ...
+4    London council takes possession of property li...
+5    Taylor Swift makes tearful 21-minute speech as...
+6    My friends always want to split the bill equal...
+7    Israeli tech firm accused of targeting First M...
+8    'No-one knows it's on' - NBA Finals feed US Wo...
+9    From near death to tournament hero - Jimenez's...
+
+Sentiment Distribution:
+sentiment
+negative    15
+positive    10
+neutral      9
+Name: count, dtype: int64
+
+Top 3 Positive Headlines:
+                                                                               title   score
+0                               Celebrated British artist David Hockney dies aged 88  0.5719
+1                Ministers want 60% of children walking or cycling to school by 2035  0.0772
+5  Taylor Swift makes tearful 21-minute speech as she joins Songwriters Hall of Fame  0.5719
+
+Top 3 Negative Headlines:
+                                                                            title   score
+2      Grooming survivors left with criminal records still being failed, BBC told -0.7717
+3      Donaldson denies meeting sex abuse accuser to 'nip in the bud' allegations -0.7906
+7  Israeli tech firm accused of targeting First Minister John Swinney in election -0.2960
+Chart saved! Open news_sentiment.png
+
+C:\Users\Vigne>start news_sentiment.png
