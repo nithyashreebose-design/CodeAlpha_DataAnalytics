@@ -1,0 +1,70 @@
+Microsoft Windows [Version 10.0.26200.8457]
+(c) Microsoft Corporation. All rights reserved.
+
+C:\Users\Vigne>curl -o titanic.csv "https://raw.githubusercontent.com/datasciencedojo/datasets/master/titanic.csv"
+  % Total    % Received % Xferd  Average Speed  Time    Time    Time   Current
+                                 Dload  Upload  Total   Spent   Left   Speed
+  0      0   0      0   0      0      0      0                              100  60302 100  60302   0      0  1.19M      0                              100  60302 100  60302   0      0  1.11M      0                              100  60302 100  60302   0      0  1.04M      0                              0
+
+C:\Users\Vigne>python -c "import pandas as pd; df=pd.read_csv('titanic.csv'); print(df.shape); print(df.head(3))"
+(891, 12)
+   PassengerId  Survived  Pclass  ...     Fare Cabin  Embarked
+0            1         0       3  ...   7.2500   NaN         S
+1            2         1       1  ...  71.2833   C85         C
+2            3         1       3  ...   7.9250   NaN         S
+
+[3 rows x 12 columns]
+
+C:\Users\Vigne>python -c "f=open('titanic_eda.py','w');f.write('import pandas as pd\nimport matplotlib\nmatplotlib.use(\"Agg\")\nimport matplotlib.pyplot as plt\nimport seaborn as sns\ndf=pd.read_csv(\"titanic.csv\")\nprint(\"=\" * 60)\nprint(\"   TITANIC DATASET - EXPLORATORY DATA ANALYSIS\")\nprint(\"=\" * 60)\nprint(\"\\n[1] Shape:\",df.shape)\nprint(\"\\n[2] Columns:\",list(df.columns))\nprint(\"\\n[3] Missing Values:\")\nprint(df.isnull().sum())\nprint(\"\\n[4] Survival Rate:\",round(df[\"Survived\"].mean()*100,2),\"%\")\nprint(\"\\n[5] Survival by Gender:\")\nprint(df.groupby(\"Sex\")[\"Survived\"].mean().round(2))\nprint(\"\\n[6] Survival by Class:\")\nprint(df.groupby(\"Pclass\")[\"Survived\"].mean().round(2))\nprint(\"\\n[7] Average Age:\",round(df[\"Age\"].mean(),2))\nprint(\"\\n[8] Average Fare:\",round(df[\"Fare\"].mean(),2))\nfig=plt.figure(figsize=(18,12))\nfig.suptitle(\"Titanic Dataset - Exploratory Data Analysis\",fontsize=16,fontweight=\"bold\")\nax1=fig.add_subplot(2,3,1)\ndf[\"Survived\"].value_counts().plot(kind=\"bar\",ax=ax1,color=[\"#E74C3C\",\"#2ECC71\"],edgecolor=\"white\")\nax1.set_title(\"Survived vs Not Survived\",fontweight=\"bold\")\nax1.set_xticklabels([\"Not Survived\",\"Survived\"],rotation=0)\nax1.set_ylabel(\"Count\")\nax2=fig.add_subplot(2,3,2)\ndf.groupby(\"Sex\")[\"Survived\"].mean().plot(kind=\"bar\",ax=ax2,color=[\"#3498DB\",\"#E91E63\"],edgecolor=\"white\")\nax2.set_title(\"Survival Rate by Gender\",fontweight=\"bold\")\nax2.set_ylabel(\"Survival Rate\")\nax2.set_xticklabels([\"Female\",\"Male\"],rotation=0)\nax3=fig.add_subplot(2,3,3)\ndf.groupby(\"Pclass\")[\"Survived\"].mean().plot(kind=\"bar\",ax=ax3,color=[\"#F39C12\",\"#8E44AD\",\"#E74C3C\"],edgecolor=\"white\")\nax3.set_title(\"Survival Rate by Class\",fontweight=\"bold\")\nax3.set_ylabel(\"Survival Rate\")\nax3.set_xticklabels([\"1st Class\",\"2nd Class\",\"3rd Class\"],rotation=0)\nax4=fig.add_subplot(2,3,4)\ndf[\"Age\"].dropna().hist(bins=30,ax=ax4,color=\"#3498DB\",edgecolor=\"white\")\nax4.set_title(\"Age Distribution\",fontweight=\"bold\")\nax4.set_xlabel(\"Age\")\nax4.set_ylabel(\"Count\")\nax5=fig.add_subplot(2,3,5)\nsns.boxplot(data=df,x=\"Pclass\",y=\"Age\",ax=ax5,palette=[\"#F39C12\",\"#8E44AD\",\"#E74C3C\"])\nax5.set_title(\"Age Distribution by Class\",fontweight=\"bold\")\nax5.set_xlabel(\"Passenger Class\")\nax6=fig.add_subplot(2,3,6)\ndf[\"Embarked\"].value_counts().plot(kind=\"pie\",ax=ax6,autopct=\"%1.1f%%\",colors=[\"#3498DB\",\"#E74C3C\",\"#2ECC71\"])\nax6.set_title(\"Embarkation Port\",fontweight=\"bold\")\nplt.tight_layout()\nplt.savefig(\"titanic_eda.png\",dpi=150,bbox_inches=\"tight\")\nprint(\"\\nChart saved as titanic_eda.png\")\nprint(\"Done!\")\n');f.close();print('Script created!')"
+Script created!
+
+C:\Users\Vigne>python titanic_eda.py
+============================================================
+   TITANIC DATASET - EXPLORATORY DATA ANALYSIS
+============================================================
+
+[1] Shape: (891, 12)
+
+[2] Columns: ['PassengerId', 'Survived', 'Pclass', 'Name', 'Sex', 'Age', 'SibSp', 'Parch', 'Ticket', 'Fare', 'Cabin', 'Embarked']
+
+[3] Missing Values:
+PassengerId      0
+Survived         0
+Pclass           0
+Name             0
+Sex              0
+Age            177
+SibSp            0
+Parch            0
+Ticket           0
+Fare             0
+Cabin          687
+Embarked         2
+dtype: int64
+
+[4] Survival Rate: 38.38 %
+
+[5] Survival by Gender:
+Sex
+female    0.74
+male      0.19
+Name: Survived, dtype: float64
+
+[6] Survival by Class:
+Pclass
+1    0.63
+2    0.47
+3    0.24
+Name: Survived, dtype: float64
+
+[7] Average Age: 29.7
+
+[8] Average Fare: 32.2
+C:\Users\Vigne\titanic_eda.py:44: FutureWarning:
+
+Passing `palette` without assigning `hue` is deprecated and will be removed in v0.14.0. Assign the `x` variable to `hue` and set `legend=False` for the same effect.
+
+  sns.boxplot(data=df,x="Pclass",y="Age",ax=ax5,palette=["#F39C12","#8E44AD","#E74C3C"])
+
+Chart saved as titanic_eda.png
+Done!
